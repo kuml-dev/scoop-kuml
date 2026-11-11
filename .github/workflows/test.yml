@@ -26,11 +26,10 @@ jobs:
           ./install-scoop.ps1 -RunAsAdmin
           "$HOME\scoop\shims" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
 
-      - name: Add the bucket from this checkout and install kuml
+      - name: Install kuml from the manifest file of this checkout
         shell: pwsh
         run: |
-          scoop bucket add kuml-test "$env:GITHUB_WORKSPACE"
-          scoop install kuml-test/kuml
+          scoop install "$env:GITHUB_WORKSPACE\bucket\kuml.json"
           scoop list
 
       - name: Run the launchers
@@ -48,3 +47,14 @@ jobs:
         run: |
           scoop uninstall kuml
           if (Get-Command kuml -ErrorAction SilentlyContinue) { throw "kuml is still on PATH" }
+
+      # The published bucket (default branch on GitHub). Pull requests cannot
+      # test this, their change is not on the default branch yet.
+      - name: Install kuml from the published bucket
+        if: github.event_name != 'pull_request'
+        shell: pwsh
+        run: |
+          scoop bucket add kuml https://github.com/kuml-dev/scoop-kuml
+          scoop install kuml/kuml
+          kuml --version
+          scoop uninstall kuml
