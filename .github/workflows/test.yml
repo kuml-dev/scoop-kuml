@@ -1,0 +1,50 @@
+name: Test install
+
+# Installs kuml with Scoop on a clean Windows runner from the checked-out
+# bucket and runs the launchers. Runs on every change to the manifest and on
+# demand.
+on:
+  push:
+    paths:
+      - "bucket/**"
+      - ".github/workflows/test.yml"
+  pull_request:
+    paths:
+      - "bucket/**"
+  workflow_dispatch:
+
+jobs:
+  install:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Scoop
+        shell: pwsh
+        run: |
+          Invoke-RestMethod -Uri https://get.scoop.sh -OutFile install-scoop.ps1
+          ./install-scoop.ps1 -RunAsAdmin
+          "$HOME\scoop\shims" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      - name: Add the bucket from this checkout and install kuml
+        shell: pwsh
+        run: |
+          scoop bucket add kuml-test "$env:GITHUB_WORKSPACE"
+          scoop install kuml-test/kuml
+          scoop list
+
+      - name: Run the launchers
+        shell: pwsh
+        run: |
+          kuml --version
+          foreach ($cmd in 'kuml', 'kuml-mcp', 'kuml-lsp') {
+            $found = Get-Command $cmd -ErrorAction SilentlyContinue
+            if (-not $found) { throw "$cmd is not on PATH" }
+            Write-Host "$cmd -> $($found.Source)"
+          }
+
+      - name: Uninstall
+        shell: pwsh
+        run: |
+          scoop uninstall kuml
+          if (Get-Command kuml -ErrorAction SilentlyContinue) { throw "kuml is still on PATH" }
