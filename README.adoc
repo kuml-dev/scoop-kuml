@@ -1,0 +1,21 @@
+= Scoop bucket for kUML
+
+https://scoop.sh[Scoop] bucket for https://kuml.dev[kUML] (Windows, `x86_64`).
+
+== Install
+
+[source,powershell]
+----
+scoop bucket add kuml https://github.com/kuml-dev/scoop-kuml
+scoop install kuml
+----
+
+The package `kuml` installs the command-line tool with a bundled Java 21 runtime (no JDK needed) and puts `kuml`, `kuml-mcp` and `kuml-lsp` on the `PATH`. Update with `scoop update kuml`.
+
+The desktop app is not part of this bucket; it is available as an MSI on the https://github.com/kuml-dev/kUML/releases[GitHub Releases] page.
+
+== How it works
+
+* `bucket/kuml.json` is the Scoop manifest. It points to `kuml-runtime-<version>-windows-x86_64.zip` of the GitHub Release.
+* The workflow `update.yml` runs every six hours, reads the latest kUML release with the `gh` CLI, takes the SHA-256 that GitHub reports for the ZIP and commits the new version, URL and hash. It does not download the archive and uses no third-party actions.
+* The `checkver` and `autoupdate` blocks in the manifest also work with Scoop's own tooling.
