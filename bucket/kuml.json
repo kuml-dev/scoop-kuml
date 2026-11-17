@@ -1,13 +1,13 @@
 {
-  "version": "0.56.0",
+  "version": "0.57.0",
   "description": "Kotlin-native UML and SysML 2 modelling DSL (command-line tool with bundled Java 21 runtime)",
   "homepage": "https://kuml.dev",
   "license": "Apache-2.0",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/kuml-dev/kUML/releases/download/v0.56.0/kuml-runtime-0.56.0-windows-x86_64.zip",
-      "hash": "edafd2907310457a05c1bb27db0a474da37dad5ea1a6c8c8fa8070742c10e045",
-      "extract_dir": "kuml-0.56.0"
+      "url": "https://github.com/kuml-dev/kUML/releases/download/v0.57.0/kuml-runtime-0.57.0-windows-x86_64.zip",
+      "hash": "73e0ff31402a007a0d779e39456c789212ce582aa28cddf451c4498d6f8774ca",
+      "extract_dir": "kuml-0.57.0"
     }
   },
   "bin": [
